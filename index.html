@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícias Navais Diárias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .date-display {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .news-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .news-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        .news-title {
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+        .news-source {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .news-summary {
+            margin-bottom: 10px;
+        }
+        .news-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .news-link:hover {
+            text-decoration: underline;
+        }
+        .refresh-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+        .refresh-btn:hover {
+            background-color: #0055aa;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Notícias Navais Diárias</h1>
+        <div class="date-display" id="current-date">Carregando data...</div>
+    </header>
+    
+    <div class="news-container">
+        <h2>Notícias de hoje</h2>
+        <div id="news-list">
+            <div class="loading">Carregando notícias...</div>
+        </div>
+        <button class="refresh-btn" id="refresh-btn">Atualizar Notícias</button>
+    </div>
+    
+    <footer>
+        <p>Aplicativo que consolida notícias navais das principais fontes do Brasil. Atualizado automaticamente diariamente.</p>
+    </footer>
+
+    <script>
+        // Função para formatar a data
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('pt-BR', options);
+        }
+
+        // Atualiza a data exibida
+        function updateCurrentDate() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = formatDate(now);
+            return now;
+        }
+
+        // Simulação de busca de notícias (na implementação real, seria substituído por chamadas API)
+        async function fetchNews() {
+            const today = new Date();
+            const newsList = document.getElementById('news-list');
+            
+            // Mostrar estado de carregamento
+            newsList.innerHTML = '<div class="loading">Buscando notícias mais recentes...</div>';
+            
+            try {
+                // Simulando um atraso de rede
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Em uma implementação real, aqui você faria:
+                // 1. Chamadas para APIs ou serviços de scraping para cada fonte
+                // 2. Filtragem para pegar apenas notícias do dia atual
+                // 3. Remoção de duplicatas
+                
+                // Dados simulados para demonstração
+                const mockNews = [
+                    {
+                        title: "Petrobras anuncia novo contrato de plataforma offshore",
+                        source: "Petrobras – Sala de Imprensa",
+                        summary: "A Petrobras assinou contrato para aluguel de nova plataforma de perfuração que irá operar na Bacia de Santos.",
+                        url: "https://petrobras.com.br/imprensa/novo-contrato-plataforma",
+                        date: today
+                    },
+                    {
+                        title: "Porto de Santos bate recorde de movimentação no primeiro semestre",
+                        source: "Portos e Navios",
+                        summary: "O Porto de Santos registrou aumento de 8,7% na movimentação de contêineres no primeiro semestre de 2023.",
+                        url: "https://portosenavios.com.br/record-santos",
+                        date: today
+                    },
+                    {
+                        title: "Marinha do Brasil recebe novo navio-patrulha",
+                        source: "Notícias da Marinha do Brasil",
+                        summary: "A Marinha incorporou hoje o novo navio-patrulha oceânico Apa (P-121), construído no Estaleiro Ilha das Cobras.",
+                        url: "https://marinha.mil.br/novo-navio-patrulha",
+                        date: today
+                    },
+                    {
+                        title: "ANP aprova novas diretrizes para exploração offshore",
+                        source: "Site da ANP",
+                        summary: "A Agência Nacional do Petróleo publicou novas resoluções para atividades de exploração em águas profundas.",
+                        url: "https://www.gov.br/anp/diretrizes-offshore",
+                        date: today
+                    }
+                ];
+                
+                // Exibir as notícias
+                displayNews(mockNews);
+            } catch (error) {
+                newsList.innerHTML = '<div class="loading">Erro ao carregar notícias. Por favor, tente novamente mais tarde.</div>';
+                console.error("Erro ao buscar notícias:", error);
+            }
+        }
+
+        // Função para exibir notícias na página
+        function displayNews(newsItems) {
+            const newsList = document.getElementById('news-list');
+            
+            if (newsItems.length === 0) {
+                newsList.innerHTML = '<div class="news-item">Nenhuma notícia naval encontrada hoje.</div>';
+                return;
+            }
+            
+            let html = '';
+            newsItems.forEach(item => {
+                html += `
+                    <div class="news-item">
+                        <h3 class="news-title">
+                            <a href="${item.url}" class="news-link" target="_blank">${item.title}</a>
+                        </h3>
+                        <div class="news-source">Fonte: ${item.source}</div>
+                        <div class="news-summary">${item.summary}</div>
+                        <a href="${item.url}" class="news-link" target="_blank">Leia mais</a>
+                    </div>
+                `;
+            });
+            
+            newsList.innerHTML = html;
+        }
+
+        // Inicialização do aplicativo
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentDate = updateCurrentDate();
+            
+            // Verificar se já buscamos notícias hoje
+            const lastFetchDate = localStorage.getItem('lastFetchDate');
+            const lastNews = localStorage.getItem('cachedNews');
+            
+            if (lastFetchDate === currentDate.toISOString().split('T')[0] && lastNews) {
+                // Usar notícias em cache se já buscamos hoje
+                displayNews(JSON.parse(lastNews));
+            } else {
+                // Buscar novas notícias
+                fetchNews();
+            }
+            
+            // Configurar botão de atualização
+            document.getElementById('refresh-btn').addEventListener('click', () => {
+                fetchNews();
+            });
+        });
+
+        // Em uma implementação real, você precisaria:
+        // 1. Criar um backend para fazer scraping ou consumir APIs das fontes listadas
+        // 2. Implementar lógica para filtrar por data e remover duplicatas
+        // 3. Configurar atualizações automáticas diárias (pode usar um serviço como AWS Lambda, Google Cloud Functions, etc.)
+        // 4. Adicionar tratamento mais robusto de erros
+    </script>
+</body>
+</html>
